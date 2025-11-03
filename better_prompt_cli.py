@@ -3,6 +3,7 @@
 better_prompt_cli.py - AI Prompt Refinement Tool
 Single-file CLI for refining prompts across multiple AI providers.
 Install: pip install rich inquirer pyyaml
+Run : python better_prompt_cli.py
 """
 
 import json
