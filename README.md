@@ -1,97 +1,86 @@
-#!/usr/bin/env python3
-"""
-better_prompt_cli.py - Interactive AI Prompt Refinement Tool
+# ⚡ better-prompt-cli — Modular Prompt Enhancer Command-Line Tool
 
-A beautiful CLI tool for refining and optimizing prompts for different AI models.
-Supports multiple providers, interactive selection, and plugin system.
+> A lightweight, extensible CLI framework built for developers who want performance, flexibility, and deep AI integrations — without the complexity.
 
-Installation:
-    pip install rich click aiohttp
+---
 
-Usage:
-    python better_prompt_cli.py
-"""
+## 🚀 Overview
+
+**better-prompt-cli** is a single-file Python command-line tool designed for high extensibility.  
+It can run locally, fetch intelligent responses from AI APIs, or interact with plugins stored in external repositories — all in one unified interface.
+
+The project is modular by design, enabling developers to:
+- 🧩 **Add or import plugins** from external repos (LangChain, OpenRouter, n8n, etc.)
+- ⚙️ **Extend command handlers** dynamically
+- 🤖 **Integrate AI models** with custom prompts per model/provider
+- 🧠 **Refine prompts** using XML-based self-adjusting logic
+
+---
+
+## 💡 Core Features
+
+| Feature | Description |
+|----------|--------------|
+| **🪶 Lightweight Single File** | Simple architecture — no frameworks, just Python. |
+| **🔌 Plugin System (Planned)** | Extend the CLI with public or private modules. |
+| **🧠 AI-Powered Commands** | Integrate with GPT, Claude, Gemini, or custom models. |
+| **⚙️ Smart Prompt Selection** | Uses pre-mapped best prompt structures per model. |
+| **🔍 Configurable via JSON/YAML** | Local config file for runtime overrides. |
+| **🚀 Deploy Anywhere** | Works on any environment with Python 3.8+. |
+
+---
+
+## 🛠️ Installation
+
+You can install directly from **PyPI** once published:
+
+```bash
+pip install better-prompt-cli
+```
+
+## 🧩 Usage
+
+```Basic command:
+better-prompt-cli run
+```
+
+## Pass arguments or model preferences:
+
+```better-prompt-cli run --model claude-3 --prompt "Generate CI/CD workflow"```
 
 
-"""
-Example Run Output:
-===================
+###  For debugging:
+```
+better-prompt-cli debug --verbose
+```
 
-$ python better_prompt_cli.py
+## 🧠 How It Works
 
-[ASCII LOGO appears]
+- Command Parsing:
+The CLI reads the user command (run, debug, etc.) and parses arguments.
 
-Step 1: Enter your prompt
-> Write a Python function to calculate factorial with error handling
+- Prompt Mapping:
+A table of model-specific prompt structures ensures optimal formatting for each LLM.
 
-Step 2: Select AI Provider
-[Table showing: OpenAI, Anthropic, Google, Alibaba, DeepSeek, xAI]
-Choose provider: 2 (Anthropic)
+- AI Invocation:
+Depending on config, the CLI calls the chosen API (OpenAI, Anthropic, etc.).
 
-Step 3: Select Model from Anthropic
-[Table showing: claude-3-opus, claude-3-sonnet, claude-3-haiku, claude-4-opus]
-Choose model: 1 (claude-3-opus)
+- Dynamic Adjustments:
+If AI responses suggest code changes, the CLI intelligently modifies or re-executes parts of the logic.
 
-Step 4: Select Plugin (Optional)
-[Table showing plugins]
-Choose plugin: 1 (DirectFormatter)
+- Plugin Bootstrapping (Future):
+Once plugin support is enabled, the CLI fetches and loads public plugin modules dynamically.
 
-[Spinner: "Refining your prompt..."]
+## 🧪 Development
 
-✓ Prompt Optimized Successfully!
-Provider: Anthropic
-Model: claude-3-opus
-Format: XML
+### Clone and install in editable mode:
+```
+git clone https://github.com/StarLord824//better-prompt.git
+cd better-prompt
+pip install -e .
+```
 
-Refined Prompt:
-[Syntax-highlighted XML output with line numbers]
-
-Save to file? (y/n): n
-
-Refine another prompt? (y/n): n
-
-Thank you for using Better Prompt CLI! 🚀
-"""
-
-better_auth.py
-│
-├── 1️⃣ Imports & Constants (≈ 10–15 lines)
-│     └── sys, json, re, textwrap, optional: yaml, xml.etree.ElementTree
-│
-├── 2️⃣ Utility: Safe Input & Output (≈ 20 lines)
-│     └── handle all input errors gracefully (empty, ctrl+c, etc.)
-│
-├── 3️⃣ Data: Model Format Mapping (≈ 20 lines)
-│     └── dict with preferred structure format per model
-│         e.g. {"claude": "xml", "gpt": "markdown", "qwen": "json"}
-│
-├── 4️⃣ Core: Prompt Analyzer (≈ 60 lines)
-│     └── detect sections like:
-│           - Task/Instruction
-│           - Context
-│           - Example
-│           - Output requirements
-│         parse heuristics using regex, keywords, sentence patterns
-│
-├── 5️⃣ Formatter Engine (≈ 70 lines)
-│     └── takes structured dict and exports to chosen format:
-│           - JSON: json.dumps()
-│           - XML: xml.etree.ElementTree
-│           - YAML: if available
-│           - Markdown: templated headers
-│
-├── 6️⃣ Suggestion Engine (≈ 20 lines)
-│     └── choose best format based on model name or user preference
-│
-├── 7️⃣ CLI Handler (≈ 60 lines)
-│     └── parse CLI args or interactive loop:
-│           "Enter your prompt:"
-│           "Target model [gpt/claude/qwen/deepseek/etc]:"
-│           -> show cleaned + formatted result
-│           -> ask if they want to save output
-│
-├── 8️⃣ Error Handling + Recovery (≈ 20 lines)
-│     └── wraps all major steps in try/except
-│         -> fallback outputs + helpful error messages
-│
-└── 9️⃣ Main Runner (≈ 10 lines)
+### Run locally:
+```
+python better-prompt-cli.py
+```
