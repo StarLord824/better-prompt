@@ -1,8 +1,0 @@
-{
-  "OpenAI": { "gpt-4": "markdown", "gpt-4o": "markdown", "gpt-4o-mini": "markdown", "o1-research": "json" },
-  "Anthropic": { "claude-3-opus": "xml", "claude-3-sonnet": "xml", "claude-4-opus": "xml", "claude-4-haiku": "xml"},
-  "Google": { "gemini-ultra": "yaml", "gemini-pro": "json", "palm-2-enterprise": "json", "gemini-1.5-viz": "markdown" },
-  "Alibaba": { "qwen3-max": "json", "qwen2.5-coder-32B": "json", "qwen3-omni": "json", "qwen2.5-vl": "yaml" },
-  "DeepSeek": { "deepseek-v3.1": "json", "deepseek-r1-instruct": "json", "deepseek-v2-lite": "yaml", "deepseek-v3-coder": "json" },
-  "xAI": { "grok-4": "markdown", "grok-code-fast": "markdown", "grok-vision-2": "markdown", "grok-agent-alpha": "xml" }
-}
