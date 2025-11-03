@@ -1,0 +1,5 @@
+instruction: convert this prompt into xml
+constraints: 'for best possible response from claude :  I want to create a cli tool
+  in python that first asks to input a prompt, then asks for the model provider, then
+  the model, and then shows some processing icons for few seconds, and outputs the
+  result data'
