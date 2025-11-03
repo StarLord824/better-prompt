@@ -4,6 +4,12 @@
 
 ---
 
+## Constraints:
+
+- Core Constraint: Error-Proof Coder → Program never crashes, handles all inputs
+- Line Budget: Detailed Creator → 300 lines maximum
+- Project Domain: Text Processing → Editors, analyzers, formatters
+
 ## 🚀 Overview
 
 **better-prompt-cli** is a single-file Python command-line tool designed for high extensibility.  

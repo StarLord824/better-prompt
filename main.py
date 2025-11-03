@@ -242,7 +242,7 @@ def display_result(prompt: str, sections: Dict, format_type: str, provider: str,
     ))
     
     console.print("\n[bold yellow]Original Prompt:[/]")
-    console.print(Panel(prompt[:200] + "..." if len(prompt) > 200 else prompt, box=box.ROUNDED))
+    console.print(Panel(prompt[:200] + "..." if len(prompt) > 200 else prompt, width=80, box=box.ROUNDED))
     
     console.print("\n[bold yellow]Refined Output:[/]")
     syntax = Syntax(output, syntax_lang.get(format_type, "text"), theme="monokai", line_numbers=True)
