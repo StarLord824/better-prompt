@@ -1,3 +1,58 @@
+#!/usr/bin/env python3
+"""
+better_prompt_cli.py - Interactive AI Prompt Refinement Tool
+
+A beautiful CLI tool for refining and optimizing prompts for different AI models.
+Supports multiple providers, interactive selection, and plugin system.
+
+Installation:
+    pip install rich click aiohttp
+
+Usage:
+    python better_prompt_cli.py
+"""
+
+
+"""
+Example Run Output:
+===================
+
+$ python better_prompt_cli.py
+
+[ASCII LOGO appears]
+
+Step 1: Enter your prompt
+> Write a Python function to calculate factorial with error handling
+
+Step 2: Select AI Provider
+[Table showing: OpenAI, Anthropic, Google, Alibaba, DeepSeek, xAI]
+Choose provider: 2 (Anthropic)
+
+Step 3: Select Model from Anthropic
+[Table showing: claude-3-opus, claude-3-sonnet, claude-3-haiku, claude-4-opus]
+Choose model: 1 (claude-3-opus)
+
+Step 4: Select Plugin (Optional)
+[Table showing plugins]
+Choose plugin: 1 (DirectFormatter)
+
+[Spinner: "Refining your prompt..."]
+
+✓ Prompt Optimized Successfully!
+Provider: Anthropic
+Model: claude-3-opus
+Format: XML
+
+Refined Prompt:
+[Syntax-highlighted XML output with line numbers]
+
+Save to file? (y/n): n
+
+Refine another prompt? (y/n): n
+
+Thank you for using Better Prompt CLI! 🚀
+"""
+
 better_auth.py
 │
 ├── 1️⃣ Imports & Constants (≈ 10–15 lines)
