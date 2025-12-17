@@ -396,17 +396,118 @@ class RefinementPipeline:
             return context
         
         prompt = context["current_prompt"]
+        task_type = context.get("task_type", "general")
+        custom_constraints = context.get("custom_constraints", [])
         
-        # Simple template application - replace {{task_description}} placeholder
-        if "{{task_description}}" in template:
-            formatted = template.replace("{{task_description}}", prompt)
-            context["current_prompt"] = formatted
-            context["improvements"].append("Applied format template for structure")
-            
-            context["metadata"]["apply_template"] = {
-                "template_applied": True,
-                "template_type": "structured"
-            }
+        # Extract constraints from the expanded prompt
+        constraint_metadata = context.get("metadata", {}).get("expand_constraints", {})
+        all_constraints = constraint_metadata.get("constraint_list", [])
+        
+        # Build replacement dictionary
+        replacements = {
+            "{{task_description}}": prompt,
+            "{{task_type}}": task_type.replace("_", " ").title(),
+        }
+        
+        # Fill in requirements (extract from task-specific constraints)
+        requirements = []
+        if task_type == "code_generation":
+            requirements = [
+                "Efficient and optimized implementation",
+                "Clear code comments and documentation",
+                "Error handling and edge cases covered"
+            ]
+        elif task_type == "image_generation":
+            requirements = [
+                "High resolution and quality",
+                "Accurate representation of described elements",
+                "Professional composition and framing"
+            ]
+        elif task_type == "sql_query":
+            requirements = [
+                "Optimized query performance",
+                "Proper indexing considerations",
+                "Clear result set structure"
+            ]
+        elif task_type == "data_analysis":
+            requirements = [
+                "Statistical significance testing",
+                "Clear visualizations",
+                "Actionable insights"
+            ]
+        else:
+            requirements = [
+                "Clear and accurate response",
+                "Comprehensive coverage of topic",
+                "Well-structured output"
+            ]
+        
+        # Add requirement placeholders
+        for i, req in enumerate(requirements[:5], 1):  # Max 5 requirements
+            replacements[f"{{{{requirement_{i}}}}}"] = req
+        
+        # Fill remaining requirement slots with empty strings
+        for i in range(len(requirements) + 1, 6):
+            replacements[f"{{{{requirement_{i}}}}}"] = ""
+        
+        # Fill in constraints
+        constraints_dict = {}
+        if all_constraints:
+            for i, constraint in enumerate(all_constraints[:5], 1):
+                # Extract key-value if possible
+                if ":" in constraint:
+                    key, value = constraint.split(":", 1)
+                    constraints_dict[f"constraint_{i}_key"] = key.strip()
+                    constraints_dict[f"constraint_{i}_value"] = value.strip()
+                else:
+                    constraints_dict[f"constraint_{i}_key"] = f"Constraint {i}"
+                    constraints_dict[f"constraint_{i}_value"] = constraint.strip()
+        
+        # Add constraint placeholders
+        if constraints_dict:
+            replacements["{{constraint_key}}"] = list(constraints_dict.values())[0] if constraints_dict else "Quality"
+            replacements["{{constraint_value}}"] = list(constraints_dict.values())[1] if len(constraints_dict) > 1 else "High quality output required"
+        else:
+            replacements["{{constraint_key}}"] = "Quality"
+            replacements["{{constraint_value}}"] = "High quality output required"
+        
+        # Fill in output description
+        output_descriptions = {
+            "code_generation": "Working, well-documented code that meets all requirements",
+            "image_generation": "High-quality image matching the description",
+            "sql_query": "Optimized SQL query with expected results",
+            "data_analysis": "Comprehensive analysis with insights and visualizations",
+            "research": "Well-researched content with sources",
+            "story_writing": "Engaging narrative with developed characters",
+            "translation": "Accurate translation maintaining original meaning",
+            "summarization": "Concise summary capturing key points",
+        }
+        
+        replacements["{{output_description}}"] = output_descriptions.get(
+            task_type,
+            "Clear, accurate, and complete response"
+        )
+        
+        # Apply all replacements
+        formatted = template
+        for placeholder, value in replacements.items():
+            formatted = formatted.replace(placeholder, value)
+        
+        # Remove any remaining unfilled placeholders
+        formatted = re.sub(r'\{\{[^}]+\}\}', '', formatted)
+        
+        # Clean up any empty lines or excessive whitespace
+        formatted = re.sub(r'\n\s*\n\s*\n', '\n\n', formatted)
+        formatted = formatted.strip()
+        
+        context["current_prompt"] = formatted
+        context["improvements"].append("Applied format template for structure")
+        
+        context["metadata"]["apply_template"] = {
+            "template_applied": True,
+            "template_type": "structured",
+            "placeholders_filled": len(replacements)
+        }
         
         return context
     
