@@ -105,7 +105,7 @@ expected_output: {{output_description}}""",
 - {{requirement_2}}
 
 ## Constraints
-- **{{constraint_key}}**: {{constraint_value}}
+{{constraints_list}}
 
 ## Expected Output
 {{output_description}}""",

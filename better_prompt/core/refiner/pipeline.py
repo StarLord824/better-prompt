@@ -177,6 +177,7 @@ class RefinementPipeline:
         prompt = context["current_prompt"]
         task_type = context.get("task_type")
         custom_constraints = context.get("custom_constraints", [])
+        has_template = context.get("format_template") is not None
         
         additions = []
         
@@ -190,18 +191,25 @@ class RefinementPipeline:
         if custom_constraints:
             additions.extend(custom_constraints)
         
-        # Append constraints to prompt
-        if additions:
+        # Only append constraints to prompt if NO template will be used
+        # If template exists, constraints will be shown in the template's Constraints section
+        if additions and not has_template:
             constraint_text = " ".join(additions)
             prompt = f"{prompt} {constraint_text}"
             context["improvements"].append(
                 f"Added {len(additions)} constraint(s) for clarity and specificity"
             )
+        elif additions and has_template:
+            # Still track that we have constraints, but don't append to prompt
+            context["improvements"].append(
+                f"Prepared {len(additions)} constraint(s) for template"
+            )
         
         context["current_prompt"] = prompt
         context["metadata"]["expand_constraints"] = {
             "constraints_added": len(additions),
-            "constraint_list": additions
+            "constraint_list": additions,
+            "appended_to_prompt": not has_template
         }
         
         return context
@@ -450,26 +458,26 @@ class RefinementPipeline:
         for i in range(len(requirements) + 1, 6):
             replacements[f"{{{{requirement_{i}}}}}"] = ""
         
-        # Fill in constraints
-        constraints_dict = {}
+        # Fill in constraints - show all as a formatted list
         if all_constraints:
-            for i, constraint in enumerate(all_constraints[:5], 1):
-                # Extract key-value if possible
-                if ":" in constraint:
-                    key, value = constraint.split(":", 1)
-                    constraints_dict[f"constraint_{i}_key"] = key.strip()
-                    constraints_dict[f"constraint_{i}_value"] = value.strip()
-                else:
-                    constraints_dict[f"constraint_{i}_key"] = f"Constraint {i}"
-                    constraints_dict[f"constraint_{i}_value"] = constraint.strip()
-        
-        # Add constraint placeholders
-        if constraints_dict:
-            replacements["{{constraint_key}}"] = list(constraints_dict.values())[0] if constraints_dict else "Quality"
-            replacements["{{constraint_value}}"] = list(constraints_dict.values())[1] if len(constraints_dict) > 1 else "High quality output required"
+            # Create a formatted list of all constraints
+            constraint_lines = []
+            for i, constraint in enumerate(all_constraints, 1):
+                constraint_lines.append(f"- {constraint}")
+            
+            # Join all constraints with newlines
+            constraints_text = "\n".join(constraint_lines)
+            
+            # For single constraint placeholder, use the first one
+            replacements["{{constraint_key}}"] = "Requirements"
+            replacements["{{constraint_value}}"] = all_constraints[0] if all_constraints else "High quality output required"
+            
+            # For multi-line constraints (if template supports it)
+            replacements["{{constraints_list}}"] = constraints_text
         else:
             replacements["{{constraint_key}}"] = "Quality"
             replacements["{{constraint_value}}"] = "High quality output required"
+            replacements["{{constraints_list}}"] = "- High quality output required"
         
         # Fill in output description
         output_descriptions = {
